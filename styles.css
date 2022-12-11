@@ -1,0 +1,19 @@
+.circular-avatar {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  background-color: teal;
+  overflow: hidden;
+}
+
+.bio {
+  margin: 20px 0;
+  width: 25%;
+  text-align: justify;
+}
+
+@media only screen and (max-width: 992px) {
+  .bio {
+    width: 100%;
+  }
+}
