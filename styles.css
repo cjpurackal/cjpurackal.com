@@ -1,19 +1,79 @@
-.circular-avatar {
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
-  background-color: teal;
-  overflow: hidden;
+:root {
+  color-scheme: light;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #35352f;
+  background: #faf8f2;
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
 }
 
-.bio {
-  margin: 20px 0;
-  width: 25%;
-  text-align: justify;
+* {
+  box-sizing: border-box;
 }
 
-@media only screen and (max-width: 992px) {
-  .bio {
-    width: 100%;
-  }
+body {
+  margin: 0;
+  padding: clamp(3rem, 10vh, 7rem) 1.5rem 3rem;
+}
+
+main {
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+h1 {
+  margin: 0 0 2rem;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.introduction {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+.geometry-study {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.5rem auto 1rem;
+  mix-blend-mode: multiply;
+  mask-image: radial-gradient(ellipse, #000 50%, transparent 72%);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+a {
+  display: inline-block;
+  padding-block: 0.625rem;
+  color: inherit;
+  text-decoration-color: #a6a395;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: #e4dfcf;
 }
