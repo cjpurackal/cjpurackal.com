@@ -13,12 +13,17 @@
 
 body {
   margin: 0;
-  padding: clamp(3rem, 10vh, 7rem) 1.5rem 3rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 10vh, 7rem) 1.5rem;
 }
 
 main {
+  width: 100%;
   max-width: 36rem;
-  margin-inline: auto;
 }
 
 h1 {
