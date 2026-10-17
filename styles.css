@@ -43,13 +43,11 @@ p {
   margin: 0 0 1rem;
 }
 
-.geometry-study {
+.logo {
   display: block;
-  width: 100%;
+  width: min(100%, 13.2rem);
   height: auto;
   margin: 0.5rem auto 1rem;
-  mix-blend-mode: multiply;
-  mask-image: radial-gradient(ellipse, #000 50%, transparent 72%);
 }
 
 nav {
