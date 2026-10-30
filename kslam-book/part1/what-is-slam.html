@@ -1,0 +1,593 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>What Is SLAM? - SLAM in Rust with kornia-slam</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/ksi.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">SLAM in Rust with kornia-slam</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/cjpurackal/kornia-slam-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/cjpurackal/kornia-slam-book/edit/main/src/part1/what-is-slam.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<p class="eyebrow"><span class="blue">Part I</span> · Foundations</p>
+<h1 id="1-what-is-slam"><a class="header" href="#1-what-is-slam">1. What Is SLAM?</a></h1>
+<p class="lede">Imagine you are the camera. You are moving through a place you have never
+seen, and all you get is one image after another.</p>
+<p><strong>SLAM, simultaneous localization and mapping</strong>, is the problem of working out from those
+images where you are and what is around you, both at the same time.</p>
+<p>What can you work out, and what can you never know? This chapter answers that one step
+at a time. Every answer forces a new piece into the system, and once
+all the pieces are in place you have rebuilt SLAM from nothing. SLAM systems differ
+in their details, so rather than survey them all, this book follows one: kornia-slam.
+Every piece we derive is a piece of its pipeline.</p>
+<h2 id="11-simultaneous-localization-and-mapping"><a class="header" href="#11-simultaneous-localization-and-mapping">1.1 Simultaneous localization and mapping</a></h2>
+<p>Switch on a robot in a building it has never seen. There is no floor plan and no GPS,
+only a camera. To do anything useful the robot must keep answering two questions:</p>
+<p><span class="margin">localization</span></p>
+<ul>
+<li><strong>Localization: where am I?</strong> The camera's <em>pose</em>, its position and orientation, at
+every moment. Over time the poses form a <em>trajectory</em>.</li>
+</ul>
+<p><span class="margin">mapping</span></p>
+<ul>
+<li><strong>Mapping: what is around me?</strong> A <em>map</em> of the surroundings. In this book's systems the
+map is a set of 3D points, called <em>landmarks</em>, that the camera can recognize again.</li>
+</ul>
+<p>Each question is familiar on its own. Given a floor plan, finding yourself on it is
+localization. Given known positions to stand at, measuring the room around you is
+mapping, the way surveyors have always worked. SLAM is the problem in which <strong>neither is
+given</strong>. The robot must build the map while using that same map to work out where it is.
+The two answers are estimated together, <em>simultaneously</em>, and each is only as good as the
+other.</p>
+<figure class="kfig wide">
+  <video autoplay loop muted playsinline poster="../figures/cube-slam.png"
+         aria-label="A camera circles a textured cube; beside it, its twin builds a sparse map and trajectory">
+    <source src="../figures/cube-slam.webm" type="video/webm">
+    <source src="../figures/cube-slam.mp4" type="video/mp4">
+  </video>
+  <figcaption>A camera maps a cube. Left: the scene, with the camera's image inset; the
+  images are all SLAM receives. Right: the trajectory and landmarks built from them (cube
+  orange, floor grey). Drawn from the true geometry for now; kornia-slam's estimates will
+  replace it.</figcaption>
+</figure>
+<p>SLAM is what lets a phone or headset pin virtual objects to a real table, a robot vacuum
+cover a room without missing a strip, a drone hold its position under a bridge where GPS
+fails, and a planetary rover know how far it has driven. The sensors differ between these
+systems: cameras, lidar, inertial sensors, wheel encoders. This book is about SLAM built
+mainly on cameras, helped by an inertial measurement unit (IMU) and, on ground robots,
+wheel odometry. The acronym dates from the mid-1990s, but the problem is older:
+estimating a map and a vehicle's position jointly goes back to work on stochastic maps in
+the late 1980s.</p>
+<p><span class="margin">running example</span>
+From here on, think from the camera's side. Each time an image arrives, the question is:</p>
+<p><strong>What configuration of the world could have produced what I just observed?</strong></p>
+<p>The rest of the chapter answers it one obstacle at a time. To reason on paper, we look at
+the cube scene of Figure 1.1 from above: the cube becomes a square, and its landmarks lie
+along the square's sides and on the floor around it.</p>
+<h2 id="12-what-a-camera-can-pick-out"><a class="header" href="#12-what-a-camera-can-pick-out">1.2 What a camera can pick out</a></h2>
+<p><span class="margin">feature point</span>
+An image is a grid of a few hundred thousand pixels, and most of them look much like their
+neighbours: a stretch of plain surface, an even patch of floor. To link one image to the
+next, the camera needs points it can find again: places that look like nothing else
+nearby, such as the corner of a printed mark or a speck on the floor. These are <em>feature
+points</em>.</p>
+<figure class="kfig">
+  <img src="../figures/slam_features.svg" alt="Feature points in two images of the cube and the matches between them">
+  <figcaption>Feature points (circles) in two images of the cube, twelve frames apart, and
+  40 of the matches between them. Blue matches pair the same physical point; orange ones
+  do not, checked against the true scene. Points and matches come from OpenCV's ORB for
+  now; kornia-slam's own will replace them.</figcaption>
+</figure>
+<p><span class="margin">correspondence</span>
+When the same physical point is found in two images, the pair of pixels is a
+<em>correspondence</em>. Correspondences are the raw material of SLAM: everything in the rest of
+this chapter works on them, not on the images. Not all of them are right. In Figure 1.2
+about a quarter of the matches pair different points that happen to look alike, and
+Section 1.7 returns to what that costs.</p>
+<p>Why corners? Slide a small window a few pixels in some direction and compare what it sees
+before and after. On a plain surface nothing changes. On a straight edge, sliding along
+the edge changes nothing either, so the point's position along the edge is uncertain.
+Only at a corner does every direction of sliding change what the window sees, so only
+there is the point pinned down in the image.</p>
+<figure class="kfig">
+  <img src="../figures/slam_corners.svg" alt="How a flat patch, an edge and a corner change when shifted">
+  <figcaption>Why feature points are corners. Top: a flat patch, an edge and a corner from
+  an image of the cube. Bottom: how much each patch changes when shifted by <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>,
+  darker meaning more. The flat patch never changes, the edge changes only across itself,
+  and the corner changes in every direction.</figcaption>
+</figure>
+<p><span class="margin">descriptor</span>
+To find a point again, the system keeps a short summary of what its surroundings look
+like, a <em>descriptor</em>, and compares summaries between images. kornia-slam uses ORB
+features: a fast corner test paired with a compact binary descriptor
+(<a href="../part2/features.html">Chapter 5</a>).</p>
+<p><strong>Consequence 1.</strong> SLAM does not work on whole images. It works on a sparse set of
+distinctive points, found in every image and matched between images. The part of the
+system that does this is the <em>frontend</em> (Part II).</p>
+<h2 id="13-a-pixel-is-a-ray"><a class="header" href="#13-a-pixel-is-a-ray">1.3 A pixel is a ray</a></h2>
+<p><span class="margin">bearing</span>
+A camera divides by depth when it projects (<a href="cameras.html">Chapter 3</a>), so depth cannot be
+read back from a pixel. A pixel only fixes a <em>direction</em> from the camera centre. Every
+point along that ray would have produced the same pixel.</p>
+<figure class="kfig">
+  <img src="../figures/slam_rays.svg" alt="One view gives rays; two views fix the landmarks">
+  <figcaption>Left: from pose <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8361em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> alone, each landmark could lie anywhere along
+  its ray. Grey dots mark where the landmarks really are, which this camera cannot tell.
+  Right: a second pose, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8361em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, sees the same landmarks along different
+  directions. Where the rays cross, the landmarks are fixed.</figcaption>
+</figure>
+<p>A single image therefore cannot map anything. A second image from a <em>different position</em>
+can, because the two rays to the same landmark meet at the landmark. The baseline matters:
+if the camera only rotated between the images, both rays leave the same centre and
+never cross anywhere useful.</p>
+<p><strong>Consequence 2.</strong> A camera-only system needs at least two views with enough parallax
+before it can place a single landmark. This is <em>initialization</em>
+(<a href="../part3/two-view.html">Chapter 7</a>). A stereo rig gets its second view for free, from a
+second camera at a known baseline (<a href="cameras.html#36-stereo-depth-from-disparity">Section 3.6</a>).</p>
+<h2 id="14-localization-and-mapping-need-each-other"><a class="header" href="#14-localization-and-mapping-need-each-other">1.4 Localization and mapping need each other</a></h2>
+<p>Section 1.1 claimed that localization and mapping are each easy when the other is solved.
+The geometry shows why: with part of the state known, the rays do all the work.</p>
+<figure class="kfig">
+  <img src="../figures/slam_chicken_egg.svg" alt="Localization from a known map; mapping from known poses">
+  <figcaption>Left: if the landmarks are known, the rays from them meet at the camera, and
+  the pose follows. This is <em>localization</em>, or resection. Right: if the poses are
+  known, the rays from them meet at a landmark, and its position follows. This is
+  <em>mapping</em>, or triangulation.</figcaption>
+</figure>
+<p><span class="margin">simultaneous</span>
+But at the start of a run neither half is known. Localizing needs a map, and mapping
+needs locations. The way out is to estimate both at once: to treat every pose and every
+landmark as unknown and solve for all of them together. That is the <em>simultaneous</em> in
+simultaneous localization and mapping.</p>
+<p><strong>Consequence 3.</strong> The core of SLAM is a joint estimate of poses and landmarks,
+called <em>bundle adjustment</em> (<a href="../part4/bundle-adjustment.html">Chapter 11</a>). Localization
+against a fixed map (<a href="../part3/pnp.html">Chapter 8</a>) and triangulation from fixed poses
+(<a href="../part3/two-view.html">Chapter 7</a>) remain useful as fast special cases.</p>
+<h2 id="15-counting-what-can-be-known"><a class="header" href="#15-counting-what-can-be-known">1.5 Counting what can be known</a></h2>
+<p>Before solving anything, we can ask whether the problem <em>can</em> be solved, by counting.
+Take <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span> views that all see the same <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> points.</p>
+<ul>
+<li><strong>Unknowns.</strong> Each pose has 6 degrees of freedom and each point has 3: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span>.</li>
+<li><strong>Equations.</strong> Each point in each view gives a pixel, two numbers: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span>.</li>
+</ul>
+<p><span class="margin">gauge freedom</span>
+One more effect reduces the unknowns. Move the whole world, every pose and every point,
+by the same rigid motion, and every image stays exactly the same. Scale the whole world
+up or down, and every image still stays the same. No measurement can detect these seven
+directions, three of rotation, three of translation and one of scale. They are the
+<em>gauge freedom</em> of monocular SLAM. Subtracting them, the measurements can determine the
+state only if</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">7.</span></span></span></span></span></p>
+<figure class="kfig">
+  <img src="../figures/slam_counting.svg" alt="Which numbers of views and points give enough equations">
+  <figcaption>Pairs <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> with enough equations to fix everything an image can fix. The
+  darkest square in each column is the fewest points that work. Two views need five
+  points, which is exactly the minimal problem solved by the five-point algorithm. Three
+  or more views need four. Counting is necessary, not sufficient: degenerate
+  configurations, such as a camera that only rotates, fail even with many points.</figcaption>
+</figure>
+<p>The count reproduces results that took decades to establish. Two calibrated views of five
+points is the minimal relative-pose problem, the one Nistér's five-point algorithm
+solves. Three views of four points is minimal as well. But the most
+important output of the count is the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">7</span></span></span></span>:</p>
+<p><strong>Consequence 4.</strong> Some things a camera can never tell us. The absolute position and
+orientation of the map are arbitrary, so a system must <em>fix the gauge</em>, usually by
+anchoring the first keyframe. A monocular camera also cannot know <strong>scale</strong>. A
+monocular map is right up to an unknown factor, and that factor can drift. Metric scale
+needs another sensor: a stereo baseline (<a href="cameras.html">Chapter 3</a>) or an IMU (Part V).</p>
+<h2 id="16-noise-from-equations-to-estimation"><a class="header" href="#16-noise-from-equations-to-estimation">1.6 Noise: from equations to estimation</a></h2>
+<p>Real measurements are noisy. To say what that does, we first need names for what is being
+estimated.</p>
+<p><span class="margin">state</span>
+The <em>state</em> is everything SLAM tries to recover: every camera pose <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.942em;vertical-align:-0.2559em;"></span><span class="mord"><span class="mord mathbf">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2559em;"><span></span></span></span></span></span></span></span></span></span> and every
+landmark position <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathbf">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>,</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0003em;vertical-align:-0.2503em;"></span><span class="mopen">{</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3173em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3567em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1433em;"><span></span></span></span></span></span></span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2503em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mclose">}</span><span class="mord">.</span></span></span></span></span></p>
+<p><span class="margin">observation model</span>
+The camera never receives the state. It receives <em>measurements</em>: the pixel at which each
+visible landmark appears. A measurement <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is tied to the state by an <em>observation
+model</em> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> and some noise <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span></span></p>
+<p>For a camera, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> moves a landmark into the camera frame (<a href="rigid-motion.html">Chapter 2</a>)
+and projects it onto the image (<a href="cameras.html">Chapter 3</a>).</p>
+<p><span class="margin">estimation</span>
+The noise <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is why the rays of Section 1.3 almost never meet exactly. With
+more measurements than unknowns, the equations have no exact solution, and we must
+<em>choose</em> a state. This turns SLAM from solving equations into <em>estimation</em>, and it is
+worth naming three objects that are easy to blur together:</p>
+<div class="table-wrapper"><table><thead><tr><th>Object</th><th>Symbol</th><th>What it is</th></tr></thead><tbody>
+<tr><td>state</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span></td><td>the true configuration of camera and world; unknown</td></tr>
+<tr><td>belief</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></td><td>a probability distribution over states, given everything observed so far</td></tr>
+<tr><td>estimate</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span></span></span></span></td><td>one state chosen to summarize the belief</td></tr>
+</tbody></table>
+</div>
+<p><span class="margin">maximum a posteriori</span>
+The usual choice of estimate is the most probable state, the <em>maximum a posteriori</em>
+(MAP) estimate. By Bayes' rule, and assuming the measurement noises are independent,</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.45em;vertical-align:-0.7em;"></span><span class="mop">ar<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.4306em;"><span style="top:-2.4em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">max</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.3521em;vertical-align:-1.3021em;"></span><span class="mop">ar<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.4306em;"><span style="top:-2.4em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">max</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.05em;"><span style="top:-1.8479em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∏</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3021em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mord">.</span></span></span></span></span></p>
+<p>If each noise is Gaussian, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathcal" style="margin-right:0.14736em;">N</span><span class="mopen">(</span><span class="mord mathbf">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathbf">Σ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>,
+then <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">∥</span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1972em;vertical-align:-0.3831em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mord"><span class="mord">∥</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.4227em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbf mtight">Σ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span></span></span></span> plus a
+constant. Taking the negative logarithm turns the product into a sum, and the most
+probable state becomes the one with the smallest weighted squared error:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.3521em;vertical-align:-1.3021em;"></span><span class="mop">ar<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6679em;"><span style="top:-2.4em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">min</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.05em;"><span style="top:-1.8479em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3021em;"><span></span></span></span></span></span><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-2.85em;"><span class="pstrut" style="height:3.2em;"></span><span style="width:0.556em;height:1.200em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.556em' height='1.200em' viewBox='0 0 556 1200'><path d='M145 15 v585 v0 v585 c2.667,10,9.667,15,21,15 c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15 c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v0 v585 h43z M367 15 v585 v0 v585 c2.667,10,9.667,15,21,15 c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15 c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v0 v585 h43z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.5596em;vertical-align:-0.5056em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mclose"><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-2.85em;"><span class="pstrut" style="height:3.2em;"></span><span style="width:0.556em;height:1.200em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.556em' height='1.200em' viewBox='0 0 556 1200'><path d='M145 15 v585 v0 v585 c2.667,10,9.667,15,21,15 c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15 c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v0 v585 h43z M367 15 v585 v0 v585 c2.667,10,9.667,15,21,15 c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15 c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v0 v585 h43z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.054em;"><span style="top:-2.3003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbf mtight">Σ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.3029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5056em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span></span></p>
+<figure class="kfig">
+  <img src="../figures/slam_noise.svg" alt="Noisy rays and a wrong association">
+  <figcaption>Four cameras triangulate one landmark. Left: with 1.5° of noise on each
+  bearing the rays nearly meet, and least squares lands close to the truth. Right: one
+  observation has been matched to the wrong landmark. Least squares cannot tell an
+  outlier from a measurement, and the estimate is pulled away. Computed with a
+  closed-form least-squares intersection in <code>figures/py/slam_noise.py</code>.</figcaption>
+</figure>
+<p><span class="margin">factor graph</span>
+The sum has structure. Each term involves only the few variables its measurement
+touches: a pixel involves one pose and one landmark. A <em>factor graph</em> draws exactly this.
+Variables are nodes, each term of the sum is a factor, and a factor connects to the
+variables its residual depends on.</p>
+<figure class="kfig">
+  <img src="../figures/factor-graph-vslam.svg" alt="Factor graph of a visual SLAM problem">
+  <figcaption>The least-squares problem as a factor graph: four poses, five landmarks.
+  Reprojection factors link one pose to one landmark, motion factors (odometry or IMU)
+  link consecutive poses, and a prior on the first pose fixes the gauge of
+  Section 1.5.</figcaption>
+</figure>
+<p><strong>Consequence 5.</strong> SLAM is nonlinear least squares over a sparse factor graph. Because
+<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> contains rotations and a perspective division, it is solved iteratively: linearize,
+solve a linear system, update, repeat (<a href="../part4/least-squares.html">Chapter 10</a>).</p>
+<p>Here is that principle at work in kornia-slam, on the smallest slice of the graph: one
+camera pose with every landmark held fixed. This is what tracking solves for every new
+frame.</p>
+<figure class="kfig">
+  <img src="../figures/tracking_estimate.svg" alt="Projections before and after pose refinement">
+  <figcaption>One tracking estimate, computed by kornia-slam. Left: the map projected
+  through the predicted pose misses the observed keypoints. The orange residuals are the
+  terms of the least-squares sum. Right: after kornia-slam refines the pose, the residuals
+  shrink to the injected pixel noise (±0.25 px) and the RMSE falls from 9.74 px to
+  0.21 px.</figcaption>
+</figure>
+<div class="callout">
+<p class="callout-label">Where this figure comes from</p>
+<p>kornia-slam computes; this book only draws. The values were produced by calling
+<code>MapProjectionEstimator::estimate_pose</code> at kornia-slam
+<a href="https://github.com/kornia/kornia-slam/blob/a9f8c529b9861821a4c410ab94717729fb2ea225/crates/kornia-slam/src/tracking/pose_estimation/map_projection/mod.rs"><code>a9f8c52</code></a>
+with its default configuration, on a synthetic fixture of 48 fixed landmarks and
+keypoints with bounded noise. The recording was made by
+<a href="https://github.com/cjpurackal/ksi">KSI</a>'s trace exporter, which also offers an
+interactive replay. Only the input and the returned pose are captured, not the
+optimizer's intermediate iterations. No image extraction or map update is involved.</p>
+</div>
+<p><span class="margin">estimate, not belief</span>
+kornia-slam, like most keyframe systems, stores <strong>estimates</strong>: one pose per keyframe and
+one position per map point. It does not keep the full belief. Uncertainty shapes how
+measurements are weighted, then disappears from the output.</p>
+<div class="callout caution">
+<p class="callout-label">Caution</p>
+<p>A map is an estimate, not the world. When an estimate is wrong, nothing in the stored map
+says so. A system can be confident and wrong. <a href="../part7/evaluation.html">Chapter 19</a>
+returns to how we detect this from the outside.</p>
+</div>
+<h2 id="17-which-pixel-is-which"><a class="header" href="#17-which-pixel-is-which">1.7 Which pixel is which?</a></h2>
+<p><span class="margin">data association</span>
+The least-squares problem quietly assumed that every measurement is tied to the right
+landmark. That tie comes from the matches of Section 1.2, and Figure 1.2 showed that some
+of them are wrong. Deciding which landmark each feature point belongs to is <em>data
+association</em>: a second, discrete unknown sitting underneath the continuous one.</p>
+<p>The right panel of Figure 1.7 shows why it matters. A correct association with noise
+costs a little accuracy, and more measurements average it away. A wrong association is
+not noise at all. It is a false factor, a constraint from a world that does not exist,
+and least squares gives it full weight.</p>
+<p><strong>Consequence 6.</strong> Matches must be checked against geometry before they are trusted:
+pairs that cannot come from one rigid scene are thrown out (RANSAC,
+<a href="../part3/two-view.html">Chapter 7</a>). The frontend finds, matches and checks; the
+<strong>backend</strong> estimates the state from what survives. The backend still guards itself with
+robust kernels, which grow more slowly than the square for large residuals
+(<a href="../part4/least-squares.html">Chapter 10</a>).</p>
+<h2 id="18-the-problem-never-stops-growing"><a class="header" href="#18-the-problem-never-stops-growing">1.8 The problem never stops growing</a></h2>
+<p>A camera produces twenty or more images a second, and the run does not end. Each image
+adds a pose, and newly seen landmarks add points. Solving the whole least-squares problem
+again for every frame becomes impossible within seconds.</p>
+<p>Three facts make it tractable:</p>
+<ul>
+<li><strong>Sparsity.</strong> Every factor touches only a pose and a landmark, so the linear systems
+inside the solver are sparse and can be solved far faster than their size suggests
+(<a href="../part4/bundle-adjustment.html">Chapter 11</a>).</li>
+<li><strong>Keyframes.</strong> Consecutive frames are nearly identical. Keeping only the frames that
+add information, the <em>keyframes</em>, shrinks the problem by an order of magnitude
+(<a href="../part3/tracking.html">Chapter 9</a>).</li>
+<li><strong>Locality.</strong> A new keyframe mostly changes the estimate near itself. Optimizing a
+small window around it, with its surroundings held fixed, captures most of the benefit.</li>
+</ul>
+<figure class="kfig">
+  <img src="../figures/slam_locality.svg" alt="Local window of a keyframe and the growth of unknowns">
+  <figcaption>Left: kornia-slam's local window applied to the cube scene at its fifteenth
+  keyframe. The three newest keyframes and the landmarks they see are optimized; older
+  keyframes that see those landmarks enter as fixed context; the rest are untouched.
+  Right: over three laps the whole map keeps growing, by poses alone once the landmarks
+  are reused, while the optimized window stays the same size. The window rule is
+  kornia-slam's (<code>MAX_ACTIVE_KFS = 3</code> in <code>mapping/bundle_adjustment.rs</code>),
+  applied here to the cube scene.</figcaption>
+</figure>
+<p><strong>Consequence 7.</strong> Tracking runs on every frame against a fixed map. Mapping runs only
+on keyframes, and optimizes a local window (<a href="../part4/local-mapping.html">Chapter 12</a>).</p>
+<h2 id="19-drift-and-why-revisiting-matters"><a class="header" href="#19-drift-and-why-revisiting-matters">1.9 Drift, and why revisiting matters</a></h2>
+<p><span class="margin">drift</span>
+A local window keeps the cost bounded, but it has a price. Each new pose is estimated
+relative to the recent past, so small errors are passed along and compound. A slightly
+wrong heading displaces every later step, so position error grows faster than the
+square root of the distance travelled, which is how a pure random walk would grow.</p>
+<figure class="kfig">
+  <img src="../figures/slam_drift.svg" alt="Drift while circling the cube">
+  <figcaption>Circling the cube on relative motion estimates alone, with 1 cm and
+  0.6° of noise per step. Left: forty simulated runs; the dots are where 300 runs
+  believe the loop ends. Right: the spread of position error grows along the whole
+  loop. Simulated in <code>figures/py/slam_drift.py</code>; the noise levels are
+  illustrative, not measured from kornia-slam.</figcaption>
+</figure>
+<p>No amount of local optimization removes this, because no measurement in the local window
+relates the current pose to the start. Only one event does: <strong>returning to a place
+already mapped</strong>. Recognizing the place adds a factor between distant parts of the
+graph. The gap that has opened up becomes a residual, and the optimizer can spread the
+correction back along the loop.</p>
+<p><span class="margin">persistence</span>
+This only works because the state <em>persists</em>. When a landmark leaves the field of view
+it is not deleted, so it can be recognized later. A visual odometry system forgets the
+past and drifts forever. A SLAM system remembers it, and that memory is what makes
+correction possible:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7054em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟶</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span></span></p>
+<p><strong>Consequence 8.</strong> A SLAM system keeps a persistent map, recognizes places it has seen
+before, and corrects the loop when it does: <em>place recognition</em> and <em>loop closure</em>
+(Part VI).</p>
+<h2 id="110-the-system-derived"><a class="header" href="#110-the-system-derived">1.10 The system, derived</a></h2>
+<p>Collecting the consequences:</p>
+<div class="table-wrapper"><table><thead><tr><th>Starting fact</th><th>Consequence</th><th>In kornia-slam</th></tr></thead><tbody>
+<tr><td>Most pixels are not distinctive</td><td>find and match feature points</td><td><code>frontend/</code></td></tr>
+<tr><td>A pixel is a ray</td><td>two views with parallax, or a stereo pair</td><td><code>initialization/</code>, <code>stereo.rs</code></td></tr>
+<tr><td>Localization and mapping need each other</td><td>estimate poses and landmarks jointly</td><td><code>mapping/bundle_adjustment.rs</code></td></tr>
+<tr><td>Seven directions are unobservable</td><td>fix the gauge; get scale from stereo or an IMU</td><td><code>initialization/</code>, <code>inertial/</code></td></tr>
+<tr><td>Measurements are noisy</td><td>nonlinear least squares over a factor graph</td><td><code>tracking/</code>, <code>mapping/</code></td></tr>
+<tr><td>Some matches are wrong</td><td>check matches against geometry; robust estimation</td><td><code>initialization/</code>, <code>tracking/</code></td></tr>
+<tr><td>The problem grows forever</td><td>keyframes and local windows</td><td><code>tracking/policy.rs</code>, <code>mapping/</code></td></tr>
+<tr><td>Relative estimates drift</td><td>a persistent map and loop closure</td><td><code>mapping/map/</code>, <code>loop_closure/</code></td></tr>
+</tbody></table>
+</div>
+<p>Arranged as a data flow, the table is kornia-slam:</p>
+<figure class="kfig">
+  <img src="../figures/system-overview.svg" alt="kornia-slam system overview">
+  <figcaption>kornia-slam at a glance. Images become ORB feature frames. Until a map
+  exists, frames go to initialization. Afterwards each frame is tracked against the
+  persistent map, and accepted keyframes grow it. Local bundle adjustment and loop
+  correction revise the same map. Grey labels name the crate modules; blue labels name
+  the part of this book that covers each stage. Arrows are data dependencies, not
+  threads.</figcaption>
+</figure>
+<div class="callout question">
+<p class="callout-label">Question</p>
+<p>Every block above exists because of an explicit model: of cameras, of noise, of rigid
+motion. Learned world models also keep a persistent state, but an implicit one, and
+they learn much of what this chapter derived. Which of these eight consequences should
+a future system keep as explicit geometry, and which should it learn? The book stays with
+explicit geometry, and <a href="../part7/frontiers.html">Chapter 20</a> returns to the question.</p>
+</div>
+<h2 id="further-reading"><a class="header" href="#further-reading">Further reading</a></h2>
+<ul>
+<li>H. Durrant-Whyte, T. Bailey. <em>Simultaneous Localization and Mapping: Part I.</em> IEEE
+Robotics &amp; Automation Magazine, 2006. A tutorial, including the history of the problem.</li>
+<li>C. Cadena et al. <em>Past, Present, and Future of Simultaneous Localization and Mapping:
+Toward the Robust-Perception Age.</em> IEEE T-RO, 2016.</li>
+<li>F. Dellaert, M. Kaess. <em>Factor Graphs for Robot Perception.</em> Foundations and Trends in
+Robotics, 2017.</li>
+<li>D. Nistér. <em>An Efficient Solution to the Five-Point Relative Pose Problem.</em> IEEE TPAMI,
+2004.</li>
+<li>D. Nistér, F. Schaffalitzky. <em>Four Points in Two or Three Calibrated Views: Theory and
+Practice.</em> IJCV, 2006.</li>
+<li>L. Carlone, A. Kim, T. Barfoot, D. Cremers, F. Dellaert (eds.). <em>SLAM Handbook: From
+Localization and Mapping to Spatial Intelligence.</em> Cambridge University Press.</li>
+<li><a href="https://github.com/cjpurackal/ksi">KSI: Kornia Spatial Intelligence</a>, a research
+notebook that develops the persistent-state view of SLAM towards world models.</li>
+</ul>
+<p class="pin">Code references: kornia-slam
+<a href="https://github.com/kornia/kornia-slam/tree/bda9631f53027f636e8c4405cc755bc76ef2f84e">bda9631</a>;
+recorded trace: kornia-slam
+<a href="https://github.com/kornia/kornia-slam/tree/a9f8c529b9861821a4c410ab94717729fb2ea225">a9f8c52</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../getting-started.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part1/rigid-motion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../getting-started.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part1/rigid-motion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/figures.js"></script>
+
+
+    </div>
+    </body>
+</html>

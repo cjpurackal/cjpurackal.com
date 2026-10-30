@@ -1,0 +1,114 @@
+/* The book's look, following KSI (Kornia Spatial Intelligence): paper, ink, one accent. */
+:root {
+  --paper: #fafaf7;
+  --ink: #232928;
+  --muted: #66706d;
+  --line: #d9deda;
+  --accent: #285c9d;
+  --accent-wash: #eef3f8;
+  --code-bg: #eef0ee;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --content-max-width: 760px;
+}
+
+.light {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --sidebar-bg: #f3f3ef;
+  --sidebar-fg: #3e4745;
+  --sidebar-non-existant: #a3aba8;
+  --sidebar-active: var(--accent);
+  --sidebar-spacer: var(--line);
+  --scrollbar: #c5cbc8;
+  --icons: #8a938f;
+  --icons-hover: var(--ink);
+  --links: var(--accent);
+  --inline-code-color: var(--ink);
+  --theme-popup-bg: var(--paper);
+  --theme-popup-border: var(--line);
+  --theme-hover: #ecefec;
+  --quote-bg: var(--accent-wash);
+  --quote-border: var(--accent);
+  --table-border-color: var(--line);
+  --table-header-bg: transparent;
+  --table-alternate-bg: transparent;
+  --searchbar-border-color: var(--line);
+  --searchbar-bg: #fff;
+  --searchresults-header-fg: var(--muted);
+  --searchresults-border-color: var(--line);
+  --search-mark-bg: #d8e6f6;
+}
+
+html { font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+::selection { background: #d8e6f6; }
+
+/* Chrome */
+.sidebar { font-family: var(--sans); font-size: 1.45rem; }
+.chapter li.part-title { font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 1.6em; }
+.chapter li a strong { font-family: var(--mono); font-weight: 400; font-size: 0.85em; color: var(--muted); }
+.menu-title { font-family: var(--mono); font-size: 1.3rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
+#menu-bar { border-bottom: 1px solid var(--line); }
+
+/* Prose */
+.content main { font-family: var(--serif); font-size: 1.9rem; line-height: 1.74; }
+.content main p { margin: 0 0 1.1em; }
+.content main strong { font-weight: 600; }
+.content main h1, .content main h2, .content main h3, .content main h4 { font-family: var(--sans); font-weight: 500; text-wrap: balance; }
+.content main h1 { font-size: 4.2rem; line-height: 1.18; letter-spacing: -1.45px; margin: 0.4em 0 0.55em; }
+.content main h2 { font-size: 2.7rem; margin: 2em 0 0.8em; line-height: 1.3; letter-spacing: -0.4px; border-top: 1px solid var(--line); padding-top: 0.9em; }
+.content main h3 { font-size: 2.1rem; margin: 1.7em 0 0.6em; }
+.content main a.header { color: inherit; }
+.content main ul, .content main ol { padding-left: 1.4em; }
+.content main li { margin-bottom: 0.3em; }
+
+.eyebrow { font-family: var(--mono); font-size: 1.2rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 2.4em 0 0 !important; }
+.eyebrow .blue { color: var(--accent); }
+.lede { font-size: 2.2rem; line-height: 1.6; color: #53605b; margin-bottom: 1.6em !important; }
+
+/* Code */
+.content main code { font-family: var(--mono); font-size: 0.8em; }
+.light .content main :not(pre) > code { background: var(--code-bg); padding: 2px 5px; border-radius: 2px; }
+.light .content main pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 2px; }
+.light .content main pre > code { background: transparent; font-size: 1.35rem; line-height: 1.65; }
+
+/* Tables */
+.content main table { font-size: 1.65rem; border-collapse: collapse; margin: 1.4em 0 1.8em; }
+.content main table td, .content main table th { border: 0; border-bottom: 1px solid var(--table-border-color); padding: 8px 14px; text-align: left; }
+.content main table thead th { font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 400; border-bottom: 1px solid var(--ink); }
+
+/* Callouts: note, question, caution */
+.callout { background: var(--accent-wash); border-left: 2px solid var(--accent); padding: 18px 24px 4px; margin: 1.7em 0; }
+.callout-label { font-family: var(--mono); font-size: 1.2rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px !important; }
+.callout.caution { background: #f8f1ec; border-left-color: #b74719; }
+.callout.caution .callout-label { color: #b74719; }
+.callout.question { background: transparent; border: 1px solid var(--line); border-left: 2px solid var(--accent); }
+
+/* Figures: drawn on the page, captioned like KSI's replay labels */
+figure.kfig { margin: 2.2em 0; text-align: center; counter-increment: figure; }
+figure.kfig img, figure.kfig video { width: 100%; max-width: 100%; box-sizing: border-box; display: block; }
+figure.kfig.narrow img { width: 62%; }
+/* Wide figures break out of the text column on large screens. */
+@media (min-width: 1250px) {
+  figure.kfig.wide { width: 1120px; max-width: calc(100vw - 420px); position: relative; left: 50%; transform: translateX(-50%); }
+  figure.kfig.wide figcaption { max-width: 760px; margin-left: auto; margin-right: auto; }
+}
+figure.kfig figcaption { text-align: left; font-family: var(--serif); font-size: 1.6rem; line-height: 1.55; color: var(--muted); margin: 1em 0 0; padding-top: 0.8em; border-top: 1px solid var(--line); }
+figure.kfig figcaption::before { content: "Figure " var(--chapter, "") counter(figure); display: block; font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35em; }
+.source { font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.04em; color: var(--muted); }
+main { counter-reset: figure; }
+.coal figure.kfig img, .navy figure.kfig img, .ayu figure.kfig img { background: var(--paper); border-radius: 4px; padding: 12px 16px; }
+
+/* Margin keywords, as in the SLAM Handbook; KSI's mono index style */
+.margin {
+  float: right; clear: right; width: 11rem; margin-right: -13.5rem; margin-top: 0.45em;
+  font-family: var(--mono); font-size: 1.1rem; line-height: 1.6; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--accent); font-style: normal;
+}
+@media (max-width: 1350px) {
+  .margin { float: none; display: block; width: auto; margin: 1.2em 0 0.2em; }
+}
+
+/* Source pins */
+.pin { font-family: var(--mono); font-size: 1.2rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1em; margin-top: 3em; }
