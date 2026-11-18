@@ -80,3 +80,22 @@ a:focus-visible {
 ::selection {
   background: #e4dfcf;
 }
+/* News list */
+.news-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+.news-item p {
+  margin: 0 0 0.75rem;
+}
+.news-item time {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.news-preview {
+  margin: 1.5rem 0 0.5rem;
+}
+.news-preview .news-list {
+  margin-bottom: 0.5rem;
+}
