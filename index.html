@@ -23,11 +23,62 @@
         </p>
       </div>
       <img class="logo" src="assets/images/logo.svg" alt="Line drawing of a row of Chinese fishing nets receding along the shore, each net a curved manifold drawn as a coordinate grid." width="512" height="335" />
+      <div class="news-preview" aria-labelledby="news-heading">
+        <p id="news-heading"><strong>News</strong></p>
+        <!-- Preview shows the latest 3 items. Edit items in assets/data/news.js -->
+        <ul class="news-list" id="news-preview-list"></ul>
+        <p><a href="news.html">All news →</a></p>
+      </div>
       <nav aria-label="Contact and profile links">
+        <a href="news.html">News</a>
         <a href="https://github.com/cjpurackal/">GitHub</a>
         <a href="mailto:cjpurackal@gmail.com">Email</a>
         <a href="assets/files/resume.pdf" download="christie_resume.pdf">Résumé</a>
       </nav>
     </main>
+    <script src="assets/data/news.js"></script>
+    <script>
+      (function () {
+        function monthToNumber(m) {
+          var lookup = {
+            jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+            jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
+          };
+          return lookup[m.toLowerCase()] || '';
+        }
+        function toDateTimeAttr(dateLabel) {
+          var m = dateLabel.match(/^([A-Za-z]{3})\\s+(\\d{4})$/);
+          if (m) return m[2] + '-' + monthToNumber(m[1]);
+          var y = dateLabel.match(/^(\\d{4})$/);
+          if (y) return y[1];
+          return '';
+        }
+        function renderPreview(containerId, items, limit) {
+          var container = document.getElementById(containerId);
+          if (!container || !Array.isArray(items)) return;
+          var frag = document.createDocumentFragment();
+          items.slice(0, limit).forEach(function (item) {
+            var li = document.createElement('li');
+            li.className = 'news-item';
+            var p = document.createElement('p');
+            var time = document.createElement('time');
+            var dt = toDateTimeAttr(item.date || '');
+            if (dt) time.setAttribute('datetime', dt);
+            time.textContent = item.date || '';
+            var sep = document.createTextNode(' — ');
+            var span = document.createElement('span');
+            span.className = 'news-text';
+            span.innerHTML = item.html || '';
+            p.appendChild(time);
+            p.appendChild(sep);
+            p.appendChild(span);
+            li.appendChild(p);
+            frag.appendChild(li);
+          });
+          container.appendChild(frag);
+        }
+        renderPreview('news-preview-list', (window && window.newsItems) || [], 3);
+      })();
+    </script>
   </body>
 </html>

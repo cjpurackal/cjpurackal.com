@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="News and updates about Christie Jacob Purackal."
+    />
+    <meta name="theme-color" content="#faf8f2" />
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>News · Christie Jacob Purackal</title>
+  </head>
+  <body>
+    <main>
+      <h1>News</h1>
+
+      <!-- To add or edit items, update assets/data/news.js (newest items first). -->
+      <ul class="news-list" id="news-list"></ul>
+
+      <nav aria-label="Site navigation">
+        <a href="./">← Home</a>
+      </nav>
+    </main>
+
+    <script src="assets/data/news.js"></script>
+    <script>
+      (function () {
+        function monthToNumber(m) {
+          var lookup = {
+            jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+            jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
+          };
+          return lookup[m.toLowerCase()] || '';
+        }
+
+        function toDateTimeAttr(dateLabel) {
+          // Supports 'Nov 2026' or '2026'
+          var m = dateLabel.match(/^([A-Za-z]{3})\\s+(\\d{4})$/);
+          if (m) return m[2] + '-' + monthToNumber(m[1]);
+          var y = dateLabel.match(/^(\\d{4})$/);
+          if (y) return y[1];
+          return ''; // fallback
+        }
+
+        function renderNewsList(containerId, items) {
+          var container = document.getElementById(containerId);
+          if (!container || !Array.isArray(items)) return;
+          var frag = document.createDocumentFragment();
+          items.forEach(function (item) {
+            var li = document.createElement('li');
+            li.className = 'news-item';
+            var p = document.createElement('p');
+
+            var time = document.createElement('time');
+            var dt = toDateTimeAttr(item.date || '');
+            if (dt) time.setAttribute('datetime', dt);
+            time.textContent = item.date || '';
+
+            var sep = document.createTextNode(' — ');
+            var span = document.createElement('span');
+            span.className = 'news-text';
+            // Intentionally using innerHTML to support safe inline links provided in assets/data/news.js
+            span.innerHTML = item.html || '';
+
+            p.appendChild(time);
+            p.appendChild(sep);
+            p.appendChild(span);
+            li.appendChild(p);
+            frag.appendChild(li);
+          });
+          container.appendChild(frag);
+        }
+
+        renderNewsList('news-list', (window && window.newsItems) || []);
+      })();
+    </script>
+  </body>
+  </html>
+
